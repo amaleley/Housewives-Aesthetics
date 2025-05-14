@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title> Housewives Aesthetics Admin Login</title>
+  <style>
+    body {
+      font-family: 'Comfortaa', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #F6F4F0;
+    }
+    form {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    input {
+      display: block;
+      margin-bottom: 1rem;
+      width: 100%;
+      padding: 10px;
+    }
+    button {
+      padding: 10px;
+      width: 100%;
+      background-color: #658179;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <form action="/login" method="POST">
+    <h2>Housewives Aesthetics Admin Login</h2>
+    <input type="text" name="username" placeholder="Username" required />
+    <input type="password" name="password" placeholder="Password" required />
+    <button type="submit">Log In</button>
+  </form>
+</body>
+</html>

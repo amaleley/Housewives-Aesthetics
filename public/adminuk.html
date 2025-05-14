@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Page</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 1rem;
+      max-width: 600px;
+      margin: auto;
+    }
+    h2 {
+      margin-top: 2rem;
+    }
+    form {
+      margin-bottom: 2rem;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.25rem;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background: #658179;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    button:hover {
+      background: #506b64;
+    }
+    .category-item {
+      border-bottom: 1px solid #ddd;
+      padding: 0.5rem 0;
+    }
+    select:invalid {
+      color: gray;
+    }
+  </style>
+</head>
+<body>
+  <h1>Admin - UK </h1>
+
+  <label for="countrySelector">Switch Country Admin Page</label>
+  <select id="countrySelector" title="Select a country admin page">
+    <option value="admin.html">Canada</option>
+    <option value="adminuk.html">UK</option>
+    <option value="adminus.html">US</option>
+  </select>
+
+  <form id="category-form">
+    <h2>Create Category</h2>
+    <label for="category-name">Category Name</label>
+    <input type="text" id="category-name" name="category-name" placeholder="Enter category name" required />
+    <button type="submit">Create Category</button>
+  </form>
+
+  <form id="product-form" enctype="multipart/form-data">
+    <h2>Add Product</h2>
+    <label for="product-name">Product Name</label>
+    <input type="text" id="product-name" name="product-name" placeholder="Enter product name" required />
+
+    <label for="product-description">Product Description</label>
+    <textarea id="product-description" name="product-description" placeholder="Enter product description" required></textarea>
+
+    <label for="product-category">Select Category</label>
+    <select id="product-category" name="product-category" title="Select a category" required>
+      <option value="" disabled selected>Select a category</option>
+    </select>
+
+    <label for="product-image">Product Image</label>
+    <input type="file" id="product-image" name="product-image" accept="image/*" required />
+
+    <label for="affiliate-link">Affiliate Link</label>
+    <input type="url" id="affiliate-link" name="affiliate-link" placeholder="Enter product link" required />
+
+    <button type="submit">Add Product</button>
+  </form>
+
+  <div id="existingCategories"></div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
+

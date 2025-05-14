@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Housewives Aesthetics</title>
+  <link rel="stylesheet" href="essentialstyles.css" />
+</head>
+
+<body>
+
+  <div class="top-bar">
+    <h2 class="top-message">Here, we celebrate you - the heart of the home</h2>
+    <p class="top-message">Discover curated essentials to elevate your lifestyle,
+      from everyday fashion, home pieces and beauty solutions.</p>
+
+    <div class="top-controls">
+      <div class="logo">
+        <a href="">
+          <img src="images/IMG_9464.png" alt="Logo" />
+        </a>
+      </div>
+      
+
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search essentials..." />
+        </div>
+
+      <div class="shop-selector">
+        <label for="regionSelect">Shop in:</label>
+        <select id="regionSelect">
+          <option disabled selected value="">Select Region</option>
+          <option value="US">US</option>
+          <option value="UK">UK</option>
+          <option value="Canada">Canada</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+ 
+
+  <div class="container">
+    <div id="categories" class="categories"></div>
+    <div id="loading" class="hidden">Loading...</div>
+    <div id="products" class="products"></div>
+    <div id="no-products" class="no-products hidden">No products found.</div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Housewives Aesthetics. All rights reserved.</p>
+  </footer>
+
+  <script src="essentials.js"></script>
+</body>
+</html>

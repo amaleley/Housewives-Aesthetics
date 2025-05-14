@@ -1,0 +1,96 @@
+import dotenv from 'dotenv';
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import session from 'express-session';
+import bodyParser from 'body-parser';
+import categoryRoutes from './routes/categoryRoutes.js';
+import productRoutes from './routes/productRoutes.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+dotenv.config();
+
+const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Middleware
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+
+app.use(
+  session({
+    secret: 'yourSecretKey',
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Hardcoded admin credentials (for now)
+const ADMIN_USERNAME = 'admin';
+const ADMIN_PASSWORD = 'admin123';
+
+// Login route
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+
+  if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+    req.session.loggedIn = true;
+    res.redirect('/admin.html');
+  } else {
+    res.send('Invalid credentials. <a href="/login.html">Try again</a>');
+  }
+});
+
+// Logout
+app.get('/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.redirect('/login.html');
+  });
+});
+
+// Auth middleware
+const requireLogin = (req, res, next) => {
+  if (req.session.loggedIn) {
+    next();
+  } else {
+    res.redirect('/login.html');
+  }
+};
+
+// Secure route to serve admin page
+app.get('/admin.html', requireLogin, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
+// Routes
+app.use('/api/categories', categoryRoutes);
+app.use('/api/products', productRoutes);
+
+// MongoDB Connection
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log('✅ MongoDB connected');
+  } catch (error) {
+    console.error('❌ MongoDB connection error:', error);
+    process.exit(1);
+  }
+};
+
+connectDB();
+
+// Start Server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
+
+
+
+
+
