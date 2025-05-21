@@ -15,7 +15,7 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Middleware
+// ===== Middleware =====
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
@@ -28,14 +28,24 @@ app.use(
   })
 );
 
+// ===== Serve static files =====
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Hardcoded admin credentials (for now)
+// ===== Hardcoded Admin Credentials (TEMP) =====
 const ADMIN_USERNAME = 'admin';
 const ADMIN_PASSWORD = 'admin123';
 
-// Login route
+// ===== Auth Middleware =====
+const requireLogin = (req, res, next) => {
+  if (req.session.loggedIn) {
+    next();
+  } else {
+    res.redirect('/login.html');
+  }
+};
+
+// ===== Login Route =====
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
 
@@ -47,32 +57,28 @@ app.post('/login', (req, res) => {
   }
 });
 
-// Logout
+// ===== Logout =====
 app.get('/logout', (req, res) => {
   req.session.destroy(() => {
     res.redirect('/login.html');
   });
 });
 
-// Auth middleware
-const requireLogin = (req, res, next) => {
-  if (req.session.loggedIn) {
-    next();
-  } else {
-    res.redirect('/login.html');
-  }
-};
+// ===== Routes =====
+app.use('/api/categories', categoryRoutes);
+app.use('/api/products', productRoutes);
 
-// Secure route to serve admin page
+// ===== Protect Admin Page =====
 app.get('/admin.html', requireLogin, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
-// Routes
-app.use('/api/categories', categoryRoutes);
-app.use('/api/products', productRoutes);
+// ===== Serve index.html at root '/' =====
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
-// MongoDB Connection
+// ===== MongoDB Connection =====
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
@@ -85,9 +91,10 @@ const connectDB = async () => {
 
 connectDB();
 
-// Start Server
+// ===== Start Server =====
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
 
 
 
