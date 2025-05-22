@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
-import cors from 'cors';
 import session from 'express-session';
 import bodyParser from 'body-parser';
 import categoryRoutes from './routes/categoryRoutes.js';
@@ -15,19 +14,25 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ===== CORS Configuration =====
-const allowedOrigins = ['https://housewivesaesthetics.com'];
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true,
-}));
+// ===== Improved CORS Configuration =====
+const allowedOrigins = ['https://housewivesaesthetics.com', 'http://localhost:3000'];
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204); // Preflight support
+  }
+
+  next();
+});
 
 // ===== Middleware =====
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -66,7 +71,7 @@ app.post('/login', (req, res) => {
     req.session.loggedIn = true;
     res.redirect('/admin.html');
   } else {
-    res.send('Invalid credentials. <a href="/login.html">Try again</a>');
+    res.status(401).send('Invalid credentials. <a href="/login.html">Try again</a>');
   }
 });
 
@@ -106,7 +111,10 @@ connectDB();
 
 // ===== Start Server =====
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
+
 
 
 
