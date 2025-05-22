@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 : window.location.pathname.includes('adminus') ? 'us'
                 : 'canada';
 
+  const API_BASE = 'https://housewives-backend.onrender.com'; // ✅ Update this to your Render backend URL
+
   const categoryForm = document.getElementById('category-form');
   const productForm = document.getElementById('product-form');
   const categorySelect = document.getElementById('product-category');
@@ -20,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Fetch categories for select and list
   async function fetchCategories() {
     try {
-      const response = await fetch('http://localhost:5000/api/categories');
+      const response = await fetch(`${API_BASE}/api/categories`);
       const categories = await response.json();
 
       if (!Array.isArray(categories)) {
@@ -31,10 +33,9 @@ document.addEventListener('DOMContentLoaded', () => {
       // Filter by country
       const filteredCategories = categories.filter(cat => cat.country === COUNTRY);
 
-      // Populate dropdown only if there are active categories
+      // Populate dropdown
       categorySelect.innerHTML = '<option value="" disabled selected>Select a category</option>';
-
-      const activeCategories = filteredCategories.filter(cat => cat.isActive); // Corrected to isActive
+      const activeCategories = filteredCategories.filter(cat => cat.isActive);
 
       if (activeCategories.length === 0) {
         const option = document.createElement('option');
@@ -50,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
 
-      // Populate list of existing categories
+      // Populate existing categories
       existingCategoriesContainer.innerHTML = '<h2>Existing Categories</h2>';
       filteredCategories.forEach(category => {
         const div = document.createElement('div');
@@ -80,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const name = document.getElementById('category-name').value;
 
     try {
-      const response = await fetch('http://localhost:5000/api/categories', {
+      const response = await fetch(`${API_BASE}/api/categories`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, country: COUNTRY })
@@ -96,6 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch (err) {
       console.error('Error creating category:', err);
+      alert('An error occurred while creating the category.');
     }
   });
 
@@ -126,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
     formData.append('country', COUNTRY);
 
     try {
-      const response = await fetch(`http://localhost:5000/api/products/${categoryId}`, {
+      const response = await fetch(`${API_BASE}/api/products/${categoryId}`, {
         method: 'POST',
         body: formData
       });
@@ -149,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Soft delete category
   async function terminateCategory(id) {
     try {
-      const response = await fetch(`http://localhost:5000/api/categories/${id}/terminate`, {
+      const response = await fetch(`${API_BASE}/api/categories/${id}/terminate`, {
         method: 'PUT'
       });
 
@@ -167,4 +169,5 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initial load
   fetchCategories();
 });
+
 
