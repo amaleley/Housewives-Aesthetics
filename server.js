@@ -3,11 +3,12 @@ import express from 'express';
 import mongoose from 'mongoose';
 import session from 'express-session';
 import bodyParser from 'body-parser';
-import cors from 'cors'; // ✅ Import cors
-import categoryRoutes from './routes/categoryRoutes.js';
-import productRoutes from './routes/productRoutes.js';
+import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
+import categoryRoutes from './routes/categoryRoutes.js';
+import productRoutes from './routes/productRoutes.js';
 
 dotenv.config();
 
@@ -15,44 +16,38 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ===== Improved CORS Configuration =====
+// ✅ Use CORS Middleware with specific domains allowed
 const allowedOrigins = ['https://housewivesaesthetics.com', 'http://localhost:3000'];
 
-const corsOptions = {
+app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error('CORS not allowed for this origin'));
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
-};
-
-app.use(cors(corsOptions)); // ✅ Use cors middleware
+}));
 
 // ===== Middleware =====
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(
-  session({
-    secret: 'yourSecretKey',
-    resave: false,
-    saveUninitialized: false,
-  })
-);
+app.use(session({
+  secret: 'yourSecretKey',
+  resave: false,
+  saveUninitialized: false,
+}));
 
-// ===== Serve static files =====
+// ===== Static Files =====
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// ===== Hardcoded Admin Credentials (TEMP) =====
+// ===== Auth Middleware =====
 const ADMIN_USERNAME = 'admin';
 const ADMIN_PASSWORD = 'admin123';
 
-// ===== Auth Middleware =====
 const requireLogin = (req, res, next) => {
   if (req.session.loggedIn) {
     next();
@@ -61,10 +56,9 @@ const requireLogin = (req, res, next) => {
   }
 };
 
-// ===== Login Route =====
+// ===== Auth Routes =====
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
-
   if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
     req.session.loggedIn = true;
     res.redirect('/admin.html');
@@ -73,28 +67,27 @@ app.post('/login', (req, res) => {
   }
 });
 
-// ===== Logout =====
 app.get('/logout', (req, res) => {
   req.session.destroy(() => {
     res.redirect('/login.html');
   });
 });
 
-// ===== Routes =====
+// ✅ API Routes
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
 
-// ===== Protect Admin Page =====
+// ✅ Serve protected admin page
 app.get('/admin.html', requireLogin, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
-// ===== Serve index.html at root '/' =====
+// ✅ Serve root page
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// ===== MongoDB Connection =====
+// ===== MongoDB Connect =====
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
@@ -107,11 +100,11 @@ const connectDB = async () => {
 
 connectDB();
 
-// ===== Start Server =====
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
 
 
 
