@@ -3,6 +3,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import session from 'express-session';
 import bodyParser from 'body-parser';
+import cors from 'cors'; // ✅ Import cors
 import categoryRoutes from './routes/categoryRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import path from 'path';
@@ -17,22 +18,19 @@ const __dirname = path.dirname(__filename);
 // ===== Improved CORS Configuration =====
 const allowedOrigins = ['https://housewivesaesthetics.com', 'http://localhost:3000'];
 
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true,
+};
 
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(204); // Preflight support
-  }
-
-  next();
-});
+app.use(cors(corsOptions)); // ✅ Use cors middleware
 
 // ===== Middleware =====
 app.use(bodyParser.urlencoded({ extended: true }));
