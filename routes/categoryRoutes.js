@@ -7,18 +7,16 @@ import {
 
 const router = express.Router();
 
-// Create a new category
-router.post('/', createCategory);
-
-// Get all categories
-router.get('/', (req, res) => {
-  res.send('Categories endpoint is working!');
+// Debug/test route
+router.get('/test', (req, res) => {
+  res.json({ message: 'Test route working' });
 });
 
-
-// Soft-delete (terminate) a category by ID
+router.post('/', createCategory);
+router.get('/', getCategories);
 router.put('/:id/terminate', terminateCategory);
 
 export default router;
+
 
 

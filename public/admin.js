@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ✅ Updated fetchCategories with credentials and headers
+  // ✅ Updated fetchCategories with error handling
   async function fetchCategories() {
     try {
       const response = await fetch(`${API_BASE}/api/categories`, {
@@ -29,6 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
           'Content-Type': 'application/json',
         },
       });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`Failed to fetch categories. Status: ${response.status}`);
+        console.error('Response body:', errorText);
+        alert('Failed to load categories. Please check the server or CORS settings.');
+        return;
+      }
 
       const categories = await response.json();
 
@@ -75,13 +83,19 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     } catch (err) {
       console.error('Error fetching categories:', err);
+      alert('A network error occurred while fetching categories.');
     }
   }
 
-  // Create category
+  // ✅ Safe category creation
   categoryForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const name = document.getElementById('category-name').value;
+    const name = document.getElementById('category-name').value.trim();
+
+    if (!name) {
+      alert('Category name is required.');
+      return;
+    }
 
     try {
       const response = await fetch(`${API_BASE}/api/categories`, {
@@ -97,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await fetchCategories();
       } else {
         const error = await response.json();
-        alert(`Failed to create category: ${error.message}`);
+        alert(`Failed to create category: ${error.message || 'Unknown error'}`);
       }
     } catch (err) {
       console.error('Error creating category:', err);
@@ -105,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Create product
+  // ✅ Safe product creation
   productForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -153,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Soft delete category
+  // ✅ Soft delete category with error feedback
   async function terminateCategory(id) {
     try {
       const response = await fetch(`${API_BASE}/api/categories/${id}/terminate`, {
@@ -165,10 +179,12 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('Category terminated.');
         fetchCategories();
       } else {
-        alert('Failed to terminate category.');
+        const error = await response.json();
+        alert(`Failed to terminate category: ${error.message || 'Unknown error'}`);
       }
     } catch (err) {
       console.error('Error terminating category:', err);
+      alert('A network error occurred while terminating the category.');
     }
   }
 
