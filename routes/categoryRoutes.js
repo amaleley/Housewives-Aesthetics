@@ -7,9 +7,15 @@ import {
 
 const router = express.Router();
 
+// Create a new category
 router.post('/', createCategory);
+
+// Get all categories
 router.get('/', getCategories);
+
+// Soft-delete (terminate) a category by ID
 router.put('/:id/terminate', terminateCategory);
 
 export default router;
+
 

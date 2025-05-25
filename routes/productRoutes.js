@@ -1,3 +1,4 @@
+// routes/productRoutes.js
 import express from 'express';
 import multer from 'multer';
 import { createProduct, getProductsByCategory } from '../controllers/productController.js';
@@ -17,13 +18,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Route to create a product for a specific category
-router.post('/:categoryId', upload.single('image'), createProduct);
-
-// Route to get all products in a specific category
-router.get('/:categoryId', getProductsByCategory);
-
-// Route to fetch all products
+// ✅ Static route FIRST to avoid matching errors
 router.get('/all-products', async (req, res) => {
   try {
     const products = await Product.find({});
@@ -34,5 +29,12 @@ router.get('/all-products', async (req, res) => {
   }
 });
 
+// ✅ Route to create a product under a category
+router.post('/:categoryId', upload.single('image'), createProduct);
+
+// ✅ Route to get all products in a category
+router.get('/:categoryId', getProductsByCategory);
+
 export default router;
+
 
