@@ -17,7 +17,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // ✅ Use CORS Middleware with specific domains allowed
-const allowedOrigins = ['https://housewivesaesthetics.com', 'http://localhost:10000'];
+const allowedOrigins = ['https://housewivesaesthetics.com', 'http://localhost:3000'];
 
 app.use(cors({
   origin: function (origin, callback) {
