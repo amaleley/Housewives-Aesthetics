@@ -16,18 +16,18 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ✅ Use CORS Middleware with specific domains allowed
-const allowedOrigins = ['https://housewivesaesthetics.com', 'http://localhost:3000'];
-
+// ✅ CORS Middleware with logging
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+  origin: (origin, callback) => {
+    const allowed = ['https://housewivesaesthetics.com', 'http://localhost:3000'];
+    if (!origin || allowed.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('CORS not allowed for this origin'));
+      console.error('❌ Blocked by CORS:', origin);
+      callback(new Error('Not allowed by CORS'));
     }
   },
-  credentials: true,
+  credentials: true
 }));
 
 // ===== Middleware =====
@@ -100,11 +100,12 @@ const connectDB = async () => {
 
 connectDB();
 
-// ✅ 🔥 FIXED: Removed fallback port — use Render-assigned port only
+// ✅ Use Render-assigned port (no fallback)
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
 
 
 
