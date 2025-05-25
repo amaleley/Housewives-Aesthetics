@@ -11,7 +11,10 @@ const router = express.Router();
 router.post('/', createCategory);
 
 // Get all categories
-router.get('/', getCategories);
+router.get('/', (req, res) => {
+  res.send('Categories endpoint is working!');
+});
+
 
 // Soft-delete (terminate) a category by ID
 router.put('/:id/terminate', terminateCategory);
