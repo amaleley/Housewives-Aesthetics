@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 : window.location.pathname.includes('adminus') ? 'us'
                 : 'canada';
 
-  const API_BASE = 'https://housewives-backend.onrender.com'; // ✅ Update this to your Render backend URL
+  const API_BASE = 'https://housewives-backend.onrender.com';
 
   const categoryForm = document.getElementById('category-form');
   const productForm = document.getElementById('product-form');
@@ -19,10 +19,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Fetch categories for select and list
+  // ✅ Updated fetchCategories with credentials and headers
   async function fetchCategories() {
     try {
-      const response = await fetch(`${API_BASE}/api/categories`);
+      const response = await fetch(`${API_BASE}/api/categories`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
       const categories = await response.json();
 
       if (!Array.isArray(categories)) {
@@ -30,10 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Filter by country
       const filteredCategories = categories.filter(cat => cat.country === COUNTRY);
 
-      // Populate dropdown
       categorySelect.innerHTML = '<option value="" disabled selected>Select a category</option>';
       const activeCategories = filteredCategories.filter(cat => cat.isActive);
 
@@ -51,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
 
-      // Populate existing categories
       existingCategoriesContainer.innerHTML = '<h2>Existing Categories</h2>';
       filteredCategories.forEach(category => {
         const div = document.createElement('div');
@@ -63,7 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
         existingCategoriesContainer.appendChild(div);
       });
 
-      // Re-bind terminate buttons
       document.querySelectorAll('.terminate-btn').forEach(btn => {
         btn.addEventListener('click', async (e) => {
           const id = e.target.getAttribute('data-id');
@@ -84,6 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const response = await fetch(`${API_BASE}/api/categories`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ name, country: COUNTRY })
       });
 
@@ -130,7 +134,8 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const response = await fetch(`${API_BASE}/api/products/${categoryId}`, {
         method: 'POST',
-        body: formData
+        body: formData,
+        credentials: 'include',
       });
 
       const result = await response.json();
@@ -152,7 +157,8 @@ document.addEventListener('DOMContentLoaded', () => {
   async function terminateCategory(id) {
     try {
       const response = await fetch(`${API_BASE}/api/categories/${id}/terminate`, {
-        method: 'PUT'
+        method: 'PUT',
+        credentials: 'include',
       });
 
       if (response.ok) {
@@ -169,5 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initial load
   fetchCategories();
 });
+
 
 
