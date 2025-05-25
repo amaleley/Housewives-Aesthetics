@@ -16,19 +16,22 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ✅ Use CORS Middleware with specific domains allowed
+// ✅ CORS Setup with Explicit Preflight Handling
 const allowedOrigins = ['https://housewivesaesthetics.com', 'http://localhost:3000'];
 
-app.use(cors({
-  origin: function (origin, callback) {
+const corsOptions = {
+  origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('CORS not allowed for this origin'));
+      callback(new Error(`CORS not allowed from origin: ${origin}`));
     }
   },
   credentials: true,
-}));
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Handle preflight (OPTIONS) requests
 
 // ===== Middleware =====
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -73,16 +76,16 @@ app.get('/logout', (req, res) => {
   });
 });
 
-// ✅ API Routes
+// ===== API Routes =====
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
 
-// ✅ Serve protected admin page
+// ===== Serve Protected Admin Page =====
 app.get('/admin.html', requireLogin, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
-// ✅ Serve root page
+// ===== Serve Root Page =====
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
