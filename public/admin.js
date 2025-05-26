@@ -126,7 +126,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const image = document.getElementById('product-image').files[0];
     const link = document.getElementById('affiliate-link').value.trim();
 
-    // ✅ Validate the categoryId
     if (!categoryId || !/^[a-f\d]{24}$/i.test(categoryId)) {
       alert('Please select a valid category.');
       console.warn("Invalid or missing categoryId:", categoryId);
@@ -152,7 +151,16 @@ document.addEventListener('DOMContentLoaded', () => {
         credentials: 'include',
       });
 
-      const result = await response.json();
+      let result;
+      try {
+        result = await response.json();
+      } catch (jsonErr) {
+        console.error('⚠️ Failed to parse JSON response:', jsonErr);
+        const text = await response.text();
+        console.warn('Response text:', text);
+        throw new Error('Invalid server response. Could not parse JSON.');
+      }
+
       if (response.ok) {
         console.log('Product created:', result);
         alert('Product created!');
@@ -189,6 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   fetchCategories();
 });
+
 
 
 
