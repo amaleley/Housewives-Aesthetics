@@ -7,7 +7,7 @@ const router = express.Router();
 // ===== Multer Storage Setup =====
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/'); // make sure 'uploads' folder exists
+    cb(null, 'uploads/'); // Ensure this folder exists
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -18,13 +18,14 @@ const upload = multer({ storage });
 
 // ===== Routes =====
 
-// Create a new product under a specific category
-router.post('/:categoryId/products', upload.single('image'), createProduct);
+// ✅ Match frontend POST to /api/products/:categoryId
+router.post('/:categoryId', upload.single('image'), createProduct);
 
-// Get all products under a specific category
+// GET all products by category (optional)
 router.get('/:categoryId/products', getProductsByCategory);
 
 export default router;
+
 
 
 
