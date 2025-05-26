@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ✅ Updated fetchCategories with error handling
   async function fetchCategories() {
     try {
       const response = await fetch(`${API_BASE}/api/categories`, {
@@ -87,7 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ✅ Safe category creation
   categoryForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('category-name').value.trim();
@@ -119,7 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ✅ Safe product creation
   productForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -167,7 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ✅ Soft delete category with error feedback
   async function terminateCategory(id) {
     try {
       const response = await fetch(`${API_BASE}/api/categories/${id}/terminate`, {
@@ -188,7 +184,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Initial load
   fetchCategories();
 });
 
