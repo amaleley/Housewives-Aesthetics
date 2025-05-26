@@ -126,10 +126,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const image = document.getElementById('product-image').files[0];
     const link = document.getElementById('affiliate-link').value.trim();
 
-    if (!categoryId) {
-      alert('Please select a category.');
+    // ✅ Validate the categoryId
+    if (!categoryId || !/^[a-f\d]{24}$/i.test(categoryId)) {
+      alert('Please select a valid category.');
+      console.warn("Invalid or missing categoryId:", categoryId);
       return;
     }
+
     if (!name || !description || !image || !link) {
       alert('Please fill in all product fields.');
       return;
