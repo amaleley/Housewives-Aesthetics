@@ -75,7 +75,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       productsContainer.innerHTML = '';
       noProductsMessage.classList.add('hidden');
 
-      const response = await fetch(`${API_BASE_URL}/api/products/${categoryId}`);
+      // ✅ FIXED URL: added /products at the end
+      const response = await fetch(`${API_BASE_URL}/api/products/${categoryId}/products`);
       const products = await response.json();
 
       allProducts = products;
