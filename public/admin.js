@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 : window.location.pathname.includes('adminus') ? 'us'
                 : 'canada';
 
-  const API_BASE = 'https://housewives-backend.onrender.com';
+  const API_BASE = 'https://housewives-aesthetics.onrender.com';
 
   const categoryForm = document.getElementById('category-form');
   const productForm = document.getElementById('product-form');
