@@ -96,14 +96,23 @@ body {
 /* Categories Container */
 .categories {
   display: flex;
-  flex-wrap: nowrap; /* Prevent wrapping */
+  flex-wrap: nowrap;
   gap: 10px;
-  justify-content: flex-start; /* Align items to the start for horizontal scroll */
+  justify-content: flex-start;
   margin-top: 20px;
   max-width: 800px;
-  overflow-x: auto; /* Enable horizontal scrolling */
-  padding-bottom: 10px; /* Optional: prevent scrollbars from overlapping content */
+  overflow-x: auto;
+  overflow-y: hidden; /* Hide vertical overflow */
+  padding-bottom: 10px;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
 }
+
+/* Chrome, Safari, Opera */
+.categories::-webkit-scrollbar {
+  display: none;
+}
+
 
 /* Individual Category Buttons */
 .category-button {
