@@ -3,8 +3,8 @@ body {
   font-family: 'Comfortaa', Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #F6F4F0;
-  color: 000;
+  background-color: #000;/*#F6F4F0*/;
+  color: #000;
 }
 
 /* Top Section */
