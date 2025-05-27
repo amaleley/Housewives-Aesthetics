@@ -96,11 +96,13 @@ body {
 /* Categories Container */
 .categories {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap; /* Prevent wrapping */
   gap: 10px;
-  justify-content: center;
+  justify-content: flex-start; /* Align items to the start for horizontal scroll */
   margin-top: 20px;
-  max-width:800px;
+  max-width: 800px;
+  overflow-x: auto; /* Enable horizontal scrolling */
+  padding-bottom: 10px; /* Optional: prevent scrollbars from overlapping content */
 }
 
 /* Individual Category Buttons */
