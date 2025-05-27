@@ -3,8 +3,8 @@ body {
   font-family: 'Comfortaa', Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #000;/*#F6F4F0*/;
-  color: #000;
+  background-color: #F6F4F0;
+  color: #333;
 }
 
 /* Top Section */
@@ -100,6 +100,7 @@ body {
   gap: 10px;
   justify-content: center;
   margin-top: 20px;
+  max-width:800px;
 }
 
 /* Individual Category Buttons */
