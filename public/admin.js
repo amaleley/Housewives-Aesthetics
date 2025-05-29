@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function fetchCategories() {
     try {
-      const response = await fetch(`${API_BASE}/api/categories`, {
+      const response = await fetch(`${API_BASE}/api/categories?country=${COUNTRY}`, {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -44,10 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      const filteredCategories = categories.filter(cat => cat.country === COUNTRY);
-
       categorySelect.innerHTML = '<option value="" disabled selected>Select a category</option>';
-      const activeCategories = filteredCategories.filter(cat => cat.isActive);
+      const activeCategories = categories.filter(cat => cat.isActive);
 
       if (activeCategories.length === 0) {
         const option = document.createElement('option');
@@ -64,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       existingCategoriesContainer.innerHTML = '<h2>Existing Categories</h2>';
-      filteredCategories.forEach(category => {
+      categories.forEach(category => {
         const div = document.createElement('div');
         div.className = 'category-item';
         div.innerHTML = `
