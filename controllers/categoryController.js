@@ -1,7 +1,7 @@
 import Category from '../models/categoryModel.js';
 import Product from '../models/productModel.js';
 
-// Create a new category
+// ✅ Create a new category
 export const createCategory = async (req, res) => {
   try {
     const { name, country } = req.body;
@@ -13,7 +13,7 @@ export const createCategory = async (req, res) => {
     const newCategory = new Category({
       name,
       country: country.toLowerCase(),
-      isActive: true
+      isActive: true,
     });
 
     await newCategory.save();
@@ -24,25 +24,27 @@ export const createCategory = async (req, res) => {
   }
 };
 
-// Get all active categories filtered by country
+// ✅ Get all active categories filtered by country (required)
 export const getCategories = async (req, res) => {
   try {
     const { country } = req.query;
 
-    const filter = { isActive: true };
-    if (country) {
-      filter.country = country.toLowerCase();
+    if (!country) {
+      return res.status(400).json({ error: 'Country query parameter is required.' });
     }
 
-    const categories = await Category.find(filter).populate('products');
-    res.json(categories);
+    const categories = await Category.find({
+      country: country.toLowerCase(),
+    }).populate('products');
+
+    res.status(200).json(categories);
   } catch (error) {
     console.error('Error fetching categories:', error);
     res.status(500).json({ error: 'Failed to fetch categories' });
   }
 };
 
-// Soft-delete (terminate) a category
+// ✅ Soft-delete (terminate) a category
 export const terminateCategory = async (req, res) => {
   const { id } = req.params;
 
