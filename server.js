@@ -16,11 +16,11 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ✅ CORS Middleware with logging
+// ===== CORS Middleware =====
 app.use(cors({
   origin: (origin, callback) => {
-    const allowed = ['https://housewivesaesthetics.com', 'http://localhost:3000'];
-    if (!origin || allowed.includes(origin)) {
+    const allowedOrigins = ['https://housewivesaesthetics.com', 'http://localhost:3000'];
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       console.error('❌ Blocked by CORS:', origin);
@@ -34,6 +34,7 @@ app.use(cors({
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
+// ===== Session =====
 app.use(session({
   secret: 'yourSecretKey',
   resave: false,
@@ -41,10 +42,13 @@ app.use(session({
 }));
 
 // ===== Static Files =====
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+const publicPath = path.resolve(__dirname, 'public');
+const uploadsPath = path.resolve(__dirname, 'uploads');
 
-// ===== Auth Middleware =====
+app.use(express.static(publicPath));
+app.use('/uploads', express.static(uploadsPath));
+
+// ===== Admin Auth =====
 const ADMIN_USERNAME = 'admin';
 const ADMIN_PASSWORD = 'admin123';
 
@@ -56,7 +60,7 @@ const requireLogin = (req, res, next) => {
   }
 };
 
-// ===== Auth Routes =====
+// ===== Login Routes =====
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
   if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
@@ -73,18 +77,23 @@ app.get('/logout', (req, res) => {
   });
 });
 
-// ✅ API Routes
+// ===== API Routes =====
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
 
-// ✅ Serve protected admin page
+// ===== Protected Admin Page =====
 app.get('/admin.html', requireLogin, (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+  res.sendFile(path.join(publicPath, 'admin.html'));
 });
 
-// ✅ Serve root page
+// ===== Root Page =====
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(publicPath, 'index.html'));
+});
+
+// ===== 404 Fallback for Debugging =====
+app.use((req, res, next) => {
+  res.status(404).send('❌ Resource not found: ' + req.originalUrl);
 });
 
 // ===== MongoDB Connect =====
@@ -100,11 +109,12 @@ const connectDB = async () => {
 
 connectDB();
 
-// ✅ Use Render-assigned port (no fallback)
-const PORT = process.env.PORT;
+// ===== Start Server =====
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
 
 
 
