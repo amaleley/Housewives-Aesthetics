@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       productCard.className = 'product';
 
       const image = document.createElement('img');
-      image.src = `${API_BASE_URL}/uploads/${product.image}`;
+      image.src = `${API_BASE_URL}${product.image}`;
       image.alt = product.name;
 
       const name = document.createElement('h4');
