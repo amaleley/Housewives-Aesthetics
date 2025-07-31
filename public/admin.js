@@ -107,7 +107,8 @@ document.addEventListener('DOMContentLoaded', () => {
         await fetchCategories();
       } else {
         const error = await response.json();
-        alert(`Failed to create category: ${error.message || 'Unknown error'}`);
+        // ✅ FIXED LINE: correct error object key
+        alert(`Failed to create category: ${error.error || 'Unknown error'}`);
       }
     } catch (err) {
       console.error('Error creating category:', err);
